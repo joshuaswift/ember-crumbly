@@ -5,7 +5,6 @@ import { deprecate } from '@ember/application/deprecations';
 import { typeOf, isPresent } from '@ember/utils';
 import {
   setProperties,
-  getWithDefault,
   computed,
   get
 } from '@ember/object';
@@ -34,7 +33,11 @@ export default Component.extend({
   routeHierarchy: computed('currentUrl', 'currentRouteName', 'reverse', {
     get() {
       get(this, 'currentUrl');
-      const currentRouteName = getWithDefault(this, 'currentRouteName', false);
+    
+      let currentRouteName = get(this, 'currentRouteName');
+      if (currentRouteName === undefined) {
+        currentRouteName = false
+      }
 
       assert('[ember-crumbly] Could not find a current route', currentRouteName);
 
@@ -49,7 +52,10 @@ export default Component.extend({
   breadCrumbClass: computed('outputStyle', {
     get() {
       let className = 'breadcrumb';
-      const outputStyle = getWithDefault(this, 'outputStyle', '');
+      let outputStyle = get(this, 'outputStyle');
+      if (outputStyle === undefined) {
+        outputStyle = ''
+      }
       if (isPresent(outputStyle)) {
         deprecate('outputStyle option will be deprecated in the next major release', false, { id: 'ember-crumbly.outputStyle', until: '2.0.0' });
       }
@@ -130,9 +136,13 @@ export default Component.extend({
           breadCrumbs.pushObject(breadCrumb);
         });
       } else {
-        let breadCrumb = copy(getWithDefault(route, 'breadCrumb', {
-          title: classify(name)
-        }));
+        let breadCrumbRoute = get(route, 'breadCrumb');
+        if (breadCrumbRoute === undefined) {
+          breadCrumbRoute = {
+            title: classify(name)
+          }
+        }
+        let breadCrumb = copy(breadCrumbRoute);
 
         if (typeOf(breadCrumb) === 'null') {
           return;
