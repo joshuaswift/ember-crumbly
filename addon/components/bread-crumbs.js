@@ -29,12 +29,13 @@ export default Component.extend({
   routing: service('-routing'),
   currentUrl: readOnly('applicationRoute.router.url'),
   router: service('router'),
+  currentRouteName: readOnly('router.currentRouteName'),
 
   routeHierarchy: computed('currentUrl', 'currentRouteName', 'reverse', {
     get() {
       get(this, 'currentUrl');
     
-      let currentRouteName = get(this.router, 'currentRouteName');
+      let currentRouteName = get(this, 'currentRouteName');
       if (currentRouteName === undefined) {
         currentRouteName = false
       }
