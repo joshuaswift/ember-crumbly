@@ -30,7 +30,7 @@ export default Component.extend({
   currentUrl: readOnly('applicationRoute.router.url'),
   router: service('router'),
 
-  routeHierarchy: computed('currentUrl', 'reverse', {
+  routeHierarchy: computed('currentUrl', 'router.currentRouteName', 'reverse', {
     get() {
       get(this, 'currentUrl');
     
